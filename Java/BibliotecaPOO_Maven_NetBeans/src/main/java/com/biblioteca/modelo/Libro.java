@@ -1,6 +1,6 @@
 package com.biblioteca.modelo;
 
-public class Libro {
+public class Libro extends Interfaz{
 
     private String titulo;
     private String autor;
@@ -11,7 +11,7 @@ public class Libro {
         this.autor = autor;
         this.disponible = true;
     }
-
+    
     public String getTitulo() {
         return titulo;
     }
@@ -23,6 +23,7 @@ public class Libro {
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
     }
+    
 
     public void mostrarLibro() {
         System.out.println("Título: " + titulo);
