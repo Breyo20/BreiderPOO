@@ -103,23 +103,18 @@ public double promedioNivel() {
     return (double) suma / contador;
 }
 
-package rpgmanager;
-
-public class Principal {
-    public static void main(String[] args) {
-
         // 1. Crear gremio
-        GremioRPG g = new GremioRPG("Heroes de la Luz");
+        GremioRPG g = new GremioRPG("The Avengers");
 
         // 2. Crear 8 personajes
-        Personaje p1 = new Personaje("Arthas", 10, 120);
-        Personaje p2 = new Personaje("Jaina", 9, 100);
-        Personaje p3 = new Personaje("Thrall", 8, 110);
-        Personaje p4 = new Personaje("Illidan", 10, 130);
-        Personaje p5 = new Personaje("Sylvanas", 9, 95);
-        Personaje p6 = new Personaje("Uther", 7, 105);
-        Personaje p7 = new Personaje("Guldan", 6, 80);
-        Personaje p8 = new Personaje("Velen", 5, 90);
+        Personaje p1 = new Personaje("Thor", 10, 120);
+        Personaje p2 = new Personaje("Iron Man", 9, 100);
+        Personaje p3 = new Personaje("Hulk", 8, 110);
+        Personaje p4 = new Personaje("Avispa", 10, 130);
+        Personaje p5 = new Personaje("Hank Pym", 9, 95);
+        Personaje p6 = new Personaje("Capitan America", 7, 105);
+        Personaje p7 = new Personaje("Pantera negra", 6, 80);
+        Personaje p8 = new Personaje("Spiterman", 5, 90);
 
         // 3. Agregar al equipo (6 entran, 2 van a espera)
         g.unirseAlEquipo(p1);
@@ -145,6 +140,4 @@ public class Principal {
         g.limpiarCaidos();
 
         // 7. Reporte final
-        g.reporteGremio();
-    }
-}
+         g.reporteGremio();
