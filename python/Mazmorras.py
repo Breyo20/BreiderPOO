@@ -61,8 +61,6 @@ class GremioRPG:
     return sum(niveles) / len(niveles)
 
 
-# ====== PRUEBA (MAIN) ======
-
 g = GremioRPG('Heroes de la Luz')
 
 p1 = Personaje('Arthas', 10, 120)
