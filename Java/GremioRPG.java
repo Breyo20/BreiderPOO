@@ -1,143 +1,141 @@
-package rpgmanager;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 
-public class GremioRPG {
+abstract class Personaje {
+    protected String nombre;
+    protected int nivel;
+    protected int puntosVida;
 
-    private Personaje[] equipoPrincipal;    // vector fijo
-    private Personaje[][] dungeon;          // matriz 3x3
-    private ArrayList<Personaje> espera;    // lista dinámica
-    private String nombreGremio;
-
-    // Constructor
-    public GremioRPG(String nombre) {
-        this.nombreGremio = nombre;
-        this.equipoPrincipal = new Personaje[6];
-        this.dungeon = new Personaje[3][3];
-        this.espera  = new ArrayList<>();
+    public Personaje(String nombre, int nivel, int puntosVida) {
+        this.nombre = nombre;
+        this.nivel = nivel;
+        this.puntosVida = puntosVida;
     }
 
-    // Agrega al equipo principal (primer espacio libre)
-    public boolean unirseAlEquipo(Personaje p) {
-        for (int i = 0; i < equipoPrincipal.length; i++) {
-            if (equipoPrincipal[i] == null) {
-                equipoPrincipal[i] = p;
-                System.out.println(p.getNombre() + " se unió al equipo.");
-                return true;
-            }
-        }
-
-        // Si está lleno, va a lista de espera
-        espera.add(p);
-        System.out.println(p.getNombre() + " en lista de espera.");
-        return false;
+    public void recibirDano(int d) {
+        puntosVida = Math.max(0, puntosVida - d);
     }
 
-    // Coloca un personaje en el dungeon
-    public void colocarEnDungeon(Personaje p, int fila, int col) {
-        if (fila >= 0 && fila < 3 && col >= 0 && col < 3) {
-            if (dungeon[fila][col] == null) {
-                dungeon[fila][col] = p;
-            } else {
-                System.out.println("Celda [" + fila + "][" + col + "] ocupada.");
-            }
-        } else {
-            System.out.println("Posición fuera de rango.");
-        }
+    public abstract int atacar(); // ahora retorna daño
+}
+
+// Interfaces
+interface Curable {
+    void curar(Personaje obj);
+}
+
+interface Invencible {
+    void activarInvencibilidad();
+    boolean esInvencible();
+}
+
+// Clases concretas
+class Mario extends Personaje implements Invencible {
+    private boolean invencible;
+
+    public Mario() {
+        super("Mario", 3, 100);
+        invencible = false;
     }
 
-    // Elimina personajes con HP = 0
-    public void limpiarCaidos() {
-
-        // 1. Limpiar vector
-        for (int i = 0; i < equipoPrincipal.length; i++) {
-            if (equipoPrincipal[i] != null && equipoPrincipal[i].getHp() == 0) {
-                System.out.println(equipoPrincipal[i].getNombre() + " ha caído.");
-                equipoPrincipal[i] = null;
-            }
-        }
-
-        // 2. Limpiar lista de espera (con Iterator)
-        Iterator<Personaje> it = espera.iterator();
-        while (it.hasNext()) {
-            Personaje p = it.next();
-            if (p.getHp() == 0) {
-                it.remove(); // eliminación segura
-            }
-        }
+    public int atacar() {
+        return 20;
     }
 
-    // Mostrar estadísticas
-    public void reporteGremio() {
-        int activos = 0;
-        int hpTotal = 0;
+    public void activarInvencibilidad() {
+        invencible = true;
+    }
 
-        for (Personaje p : equipoPrincipal) {
-            if (p != null) {
-                activos++;
-                hpTotal += p.getHp();
-            }
-        }
-
-        System.out.println("\n=== GREMIO: " + nombreGremio + " ===");
-        System.out.println("Equipo activo: " + activos + "/6");
-        System.out.println("HP total equipo: " + hpTotal);
-        System.out.println("En espera: " + espera.size());
+    public boolean esInvencible() {
+        return invencible;
     }
 }
 
-public double promedioNivel() {
-    int suma = 0;
-    int contador = 0;
+class Luigi extends Personaje implements Curable {
 
-    for (Personaje p : equipoPrincipal) {
-        if (p != null) {
-            suma += p.getNivel();
-            contador++;
-        }
+    public Luigi() {
+        super("Luigi", 3, 90);
     }
 
-    if (contador == 0) return 0;
+    public int atacar() {
+        return 15;
+    }
 
-    return (double) suma / contador;
+    public void curar(Personaje obj) {
+        obj.puntosVida += 20;
+    }
 }
 
-        // 1. Crear gremio
-        GremioRPG g = new GremioRPG("The Avengers");
+class Toad extends Personaje implements Curable {
 
-        // 2. Crear 8 personajes
-        Personaje p1 = new Personaje("Thor", 10, 120);
-        Personaje p2 = new Personaje("Iron Man", 9, 100);
-        Personaje p3 = new Personaje("Hulk", 8, 110);
-        Personaje p4 = new Personaje("Avispa", 10, 130);
-        Personaje p5 = new Personaje("Hank Pym", 9, 95);
-        Personaje p6 = new Personaje("Capitan America", 7, 105);
-        Personaje p7 = new Personaje("Pantera negra", 6, 80);
-        Personaje p8 = new Personaje("Spiterman", 5, 90);
+    public Toad() {
+        super("Toad", 2, 80);
+    }
 
-        // 3. Agregar al equipo (6 entran, 2 van a espera)
-        g.unirseAlEquipo(p1);
-        g.unirseAlEquipo(p2);
-        g.unirseAlEquipo(p3);
-        g.unirseAlEquipo(p4);
-        g.unirseAlEquipo(p5);
-        g.unirseAlEquipo(p6);
-        g.unirseAlEquipo(p7);
-        g.unirseAlEquipo(p8);
+    public int atacar() {
+        return 10;
+    }
 
-        // 4. Colocar 4 personajes en el dungeon
-        g.colocarEnDungeon(p1, 0, 0);
-        g.colocarEnDungeon(p2, 1, 1);
-        g.colocarEnDungeon(p3, 2, 2);
-        g.colocarEnDungeon(p4, 0, 2);
+    public void curar(Personaje obj) {
+        obj.puntosVida += 15;
+    }
+}
 
-        // 5. Simular batalla (dos mueren)
-        p1.setHp(0);
-        p2.setHp(0);
+// Nueva clase de presentación (SRP)
+class PersonajeView {
 
-        // 6. Limpiar caídos
-        g.limpiarCaidos();
+    public static void mostrarAtaque(Personaje atacante, Personaje objetivo, int dano) {
+        System.out.println(atacante.nombre + " ataca a " + objetivo.nombre);
+        System.out.println(objetivo.nombre + " recibe " + dano + " de daño. Vida: " + objetivo.puntosVida);
+    }
 
-        // 7. Reporte final
-         g.reporteGremio();
+    public static void mostrarCuracion(Personaje curador, Personaje objetivo) {
+        System.out.println(curador.nombre + " cura a " + objetivo.nombre + ". Vida: " + objetivo.puntosVida);
+    }
+
+    public static void mostrarInvencible(Personaje p) {
+        System.out.println(p.nombre + " es invencible!");
+    }
+}
+
+// Main
+public class Main {
+    public static void main(String[] args) {
+
+        ArrayList<Personaje> equipo = new ArrayList<>();
+
+        Mario mario = new Mario();
+        Luigi luigi = new Luigi();
+        Toad toad = new Toad();
+
+        equipo.add(mario);
+        equipo.add(luigi);
+        equipo.add(toad);
+
+        Personaje enemigo = new Personaje("Orco", 1, 100) {
+            public int atacar() {
+                return 12;
+            }
+        };
+
+        System.out.println("ATAQUE");
+        for (Personaje p : equipo) {
+            int dano = p.atacar();
+            enemigo.recibirDano(dano);
+            PersonajeView.mostrarAtaque(p, enemigo, dano);
+        }
+
+        System.out.println("\nHABILIDADES");
+        for (Personaje p : equipo) {
+
+            if (p instanceof Curable) {
+                ((Curable) p).curar(mario);
+                PersonajeView.mostrarCuracion(p, mario);
+            }
+
+            if (p instanceof Invencible) {
+                ((Invencible) p).activarInvencibilidad();
+                PersonajeView.mostrarInvencible(p);
+            }
+        }
+    }
+}
