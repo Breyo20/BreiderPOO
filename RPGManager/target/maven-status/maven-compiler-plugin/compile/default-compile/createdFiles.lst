@@ -1,0 +1,5 @@
+com\mycompany\rpgmanager\Main.class
+rpgmanager\model\Guerrero.class
+rpgmanager\model\Mago.class
+rpgmanager\model\Personaje.class
+rpgmanager\model\Arquero.class
